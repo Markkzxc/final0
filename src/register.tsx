@@ -24,9 +24,8 @@ const Register: React.FC = () => {
     // 1️⃣ Create user in Firebase Auth
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
     const uid = userCredential.user.uid;
-
     // 2️⃣ Send user info to your backend
-    await fetch("https://backend0-1-tgre.onrender.com/register", {
+    await fetch("https://backend0-2.onrender.com/register", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

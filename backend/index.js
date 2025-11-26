@@ -1,6 +1,7 @@
-const express = require("express");
-const cors = require("cors");
-const { db } = require("./firebase");
+import express from "express";
+import cors from "cors";
+import { db } from "./firebase.js";
+
 
 const app = express();
 app.use(cors());
@@ -24,7 +25,7 @@ app.post("/register", async (req, res) => {
   }
 });
 
-const PORT = 5000;
+const PORT = process.env.PORT || 5000; // Use Render's port if available
 app.listen(PORT, () =>
-  console.log(`Backend running on http://localhost:${PORT}`)
+  console.log(`Backend running on port ${PORT}`)
 );

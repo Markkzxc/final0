@@ -7,6 +7,7 @@ import {
   updateDoc,
   deleteDoc,
   doc,
+  query, where
 } from "firebase/firestore";
 import "./dashboard.css";
 
@@ -25,16 +26,22 @@ const Dashboard: React.FC = () => {
   const [message, setMessage] = useState("");
 
   // Fetch all todos
-  const fetchTodos = async () => {
-    const snapshot = await getDocs(collection(db, "todos"));
-    const todoList: Todo[] = snapshot.docs.map((doc) => ({
-      id: doc.id,
-      title: doc.data().title,
-      completed: doc.data().completed,
-      uid: doc.data().uid,
-    }));
-    setTodos(todoList);
-  };
+ const fetchTodos = async () => {
+  if (!auth.currentUser) return;
+
+  const uid = auth.currentUser.uid;
+  const q = query(collection(db, "todos"), where("uid", "==", uid));
+  const snapshot = await getDocs(q);
+
+  const todoList: Todo[] = snapshot.docs.map((doc) => ({
+    id: doc.id,
+    title: doc.data().title,
+    completed: doc.data().completed,
+    uid: doc.data().uid,
+  }));
+
+  setTodos(todoList);
+};
 
   useEffect(() => {
     fetchTodos();

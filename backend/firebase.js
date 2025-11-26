@@ -1,16 +1,12 @@
 // firebase.js
 import admin from "firebase-admin";
+import fs from "fs";
 
-// Make sure you have your service account stored in an environment variable
-if (!process.env.GOOGLE_SERVICE_ACCOUNT) {
-  throw new Error("Missing GOOGLE_SERVICE_ACCOUNT environment variable!");
-}
-
-// Parse the JSON string from the env variable
-const serviceAccount = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT);
+// Read the service account JSON
+const serviceAccount = JSON.parse(fs.readFileSync('./serviceAccountKey.json', 'utf8'));
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
 });
 
-export default admin;
+export const db = admin.firestore();

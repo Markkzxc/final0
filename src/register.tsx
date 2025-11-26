@@ -21,6 +21,7 @@ const Register: React.FC = () => {
 
   try {
     // 1️⃣ Create user in Firebase Auth
+    // 1️⃣ Create user in Firebase Auth
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
     const uid = userCredential.user.uid;
 
@@ -36,7 +37,6 @@ const Register: React.FC = () => {
       }),
     });
 
-    // 3️⃣ Show success message
     setMessage("✅ Registered successfully!");
     setSuccess(true);
 

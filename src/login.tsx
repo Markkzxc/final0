@@ -18,13 +18,13 @@ const Login: React.FC = () => {
     setSuccess(false);
 
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      const uid = userCredential.user.uid;
+      // Sign in with Firebase Auth
+      await signInWithEmailAndPassword(auth, email, password);
 
       setMessage("✅ Logged in successfully!");
       setSuccess(true);
 
-      // Navigate to dashboard
+      // Navigate to dashboard after login
       navigate("/dashboard");
     } catch (err: any) {
       setMessage("❌ Error: " + err.message);
@@ -32,37 +32,39 @@ const Login: React.FC = () => {
   };
 
   return (
-<div className="login-wrapper">
-  <div className="login-container">
-    <h2>Welcome Back!</h2>
-    <p className="login-intro">
-      Log in to manage your tasks and stay organized with your personal To-Do App.
-    </p>
-    <form onSubmit={handleLogin}>
-      <input
-        type="email"
-        placeholder="Email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        required
-      />
-      <input
-        type="password"
-        placeholder="Password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        required
-      />
-      <button type="submit">Login</button>
-    </form>
-    {message && (
-      <div className={`login-message ${success ? "success" : ""}`}>{message}</div>
-    )}
-    <p className="login-footer">
-      Don't have an account? <a href="/register">Register here</a>
-    </p>
-  </div>
-</div>
+    <div className="login-wrapper">
+      <div className="login-container">
+        <h2>Welcome Back!</h2>
+        <p className="login-intro">
+          Log in to manage your tasks and stay organized with your personal To-Do App.
+        </p>
+        <form onSubmit={handleLogin}>
+          <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+          <button type="submit">Login</button>
+        </form>
+        {message && (
+          <div className={`login-message ${success ? "success" : ""}`}>
+            {message}
+          </div>
+        )}
+        <p className="login-footer">
+          Don't have an account? <a href="/register">Register here</a>
+        </p>
+      </div>
+    </div>
   );
 };
 

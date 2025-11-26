@@ -17,17 +17,43 @@ const Login: React.FC = () => {
     setMessage("");
     setSuccess(false);
 
+    // Extra validation before sending to Firebase
+    if (!email || !password) {
+      setMessage("❌ Please enter email and password.");
+      return;
+    }
+
     try {
-      // Sign in with Firebase Auth
       await signInWithEmailAndPassword(auth, email, password);
 
       setMessage("✅ Logged in successfully!");
       setSuccess(true);
 
-      // Navigate to dashboard after login
       navigate("/dashboard");
     } catch (err: any) {
-      setMessage("❌ Error: " + err.message);
+      console.log(err.code);
+
+      // Friendly error messages
+      switch (err.code) {
+        case "auth/invalid-email":
+          setMessage("❌ Invalid email format.");
+          break;
+        case "auth/wrong-password":
+          setMessage("❌ Incorrect password. Please try again.");
+          break;
+        case "auth/user-not-found":
+          setMessage("❌ No account found with this email.");
+          break;
+        case "auth/invalid-email":
+          setMessage("❌ Invalid email format.");
+          break;
+        case "auth/too-many-requests":
+          setMessage("❌ Too many attempts. Please try again later.");
+          break;
+        default:
+          setMessage("❌ Login failed. Please try again.");
+          break;
+      }
     }
   };
 

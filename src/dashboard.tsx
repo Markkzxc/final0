@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { db, auth } from "./firebase";
+import { signOut, onAuthStateChanged } from "firebase/auth"; // Import onAuthStateChanged
+import { useNavigate } from "react-router-dom";
 import {
   collection,
   addDoc,
@@ -7,7 +9,8 @@ import {
   updateDoc,
   deleteDoc,
   doc,
-  query, where
+  query,
+  where,
 } from "firebase/firestore";
 import "./dashboard.css";
 
@@ -24,35 +27,67 @@ const Dashboard: React.FC = () => {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingTitle, setEditingTitle] = useState("");
   const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(true); // Add loading state
+  
+  const navigate = useNavigate();
 
-  // Fetch all todos
- const fetchTodos = async () => {
-  if (!auth.currentUser) return;
-
-  const uid = auth.currentUser.uid;
-  const q = query(collection(db, "todos"), where("uid", "==", uid));
-  const snapshot = await getDocs(q);
-
-  const todoList: Todo[] = snapshot.docs.map((doc) => ({
-    id: doc.id,
-    title: doc.data().title,
-    completed: doc.data().completed,
-    uid: doc.data().uid,
-  }));
-
-  setTodos(todoList);
-};
-
+  // --- 1. SECURITY GUARD: Check Auth State on Load ---
   useEffect(() => {
-    fetchTodos();
-  }, []);
+    // This listener runs whenever the component mounts (even via Back button)
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // User is logged in? Great, fetch their data.
+        fetchTodos(user.uid);
+        setLoading(false);
+      } else {
+        // User is NOT logged in? KICK THEM OUT immediately.
+        // { replace: true } prevents them from clicking "Back" to return here.
+        navigate("/", { replace: true }); 
+      }
+    });
+
+    // Cleanup subscription on unmount
+    return () => unsubscribe();
+  }, [navigate]);
+
+  // Fetch all todos (Moved logic to accept UID directly)
+  const fetchTodos = async (uid: string) => {
+    const q = query(collection(db, "todos"), where("uid", "==", uid));
+    const snapshot = await getDocs(q);
+
+    const todoList: Todo[] = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      title: doc.data().title,
+      completed: doc.data().completed,
+      uid: doc.data().uid,
+    } as Todo));
+
+    setTodos(todoList);
+  };
+
+  // --- 2. UPDATED LOGOUT FUNCTION ---
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      // Clear local state
+      setTodos([]);
+      sessionStorage.clear();
+      
+      // Navigate to Login and REPLACE the history entry
+      // This wipes the "Dashboard" from the browser's "Back" stack
+      navigate("/", { replace: true });
+      
+    } catch (error) {
+      console.error("Error logging out: ", error);
+    }
+  };
 
   // Add a new todo
   const handleAddTodo = async () => {
     if (!newTodo.trim() || !auth.currentUser) return;
-
     const uid = auth.currentUser.uid;
-
+    
+    // Optimistic UI update (optional, but feels faster)
     await addDoc(collection(db, "todos"), {
       title: newTodo,
       completed: false,
@@ -61,7 +96,7 @@ const Dashboard: React.FC = () => {
 
     setMessage("✅ Task added!");
     setNewTodo("");
-    fetchTodos();
+    fetchTodos(uid);
   };
 
   // Toggle completed status
@@ -69,14 +104,14 @@ const Dashboard: React.FC = () => {
     const todoRef = doc(db, "todos", todo.id);
     await updateDoc(todoRef, { completed: !todo.completed });
     setMessage(`✅ Task "${todo.title}" updated!`);
-    fetchTodos();
+    if(auth.currentUser) fetchTodos(auth.currentUser.uid);
   };
 
   // Delete a todo
   const handleDelete = async (id: string) => {
     await deleteDoc(doc(db, "todos", id));
     setMessage("✅ Task deleted!");
-    fetchTodos();
+    if(auth.currentUser) fetchTodos(auth.currentUser.uid);
   };
 
   // Start editing a todo
@@ -92,13 +127,23 @@ const Dashboard: React.FC = () => {
     setEditingId(null);
     setEditingTitle("");
     setMessage("✅ Task updated!");
-    fetchTodos();
+    if(auth.currentUser) fetchTodos(auth.currentUser.uid);
   };
+
+  // Prevent rendering the dashboard while checking auth
+  if (loading) {
+    return <div className="loading-screen">Loading...</div>; 
+  }
 
   return (
     <div className="dashboard-wrapper">
       <div className="dashboard-container">
-        <h1>To-Do App</h1>
+        <div className="dashboard-header">
+          <h1>To-Do App</h1>
+          <button className="logout-btn" onClick={handleLogout}>
+            Logout
+          </button>
+        </div>
 
         <div className="todo-input">
           <input
@@ -135,12 +180,9 @@ const Dashboard: React.FC = () => {
                       className="done-btn"
                       onClick={() => toggleComplete(todo)}
                     >
-                      Mark as Done
+                      Done
                     </button>
-                    <button
-                      className="edit-btn"
-                      onClick={() => startEdit(todo)}
-                    >
+                    <button className="edit-btn" onClick={() => startEdit(todo)}>
                       Edit
                     </button>
                   </>

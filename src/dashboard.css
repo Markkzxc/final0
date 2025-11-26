@@ -1,3 +1,6 @@
+/* dashboard.css */
+
+/* 1. Global Reset */
 body, html {
   margin: 0;
   padding: 0;
@@ -5,90 +8,138 @@ body, html {
   background: #f0f4f8;
 }
 
+/* 2. Wrapper: Centers the content and allows full page scrolling */
 .dashboard-wrapper {
+  min-height: 100vh; /* Covers full screen height */
+  width: 100%;
   display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  padding: 40px 20px;
-  min-height: 100vh;
-  min-height: 100vh;
-  min-height: 100vh;
+  justify-content: center; /* Centers horizontally */
+  align-items: flex-start; /* Aligns to top (crucial for scrolling) */
+  padding: 50px 20px;      /* Top/Bottom padding, Side padding */
+  box-sizing: border-box;
 }
 
+/* 3. Container: The white card */
 .dashboard-container {
-    margin-top: 170px;
-    margin-left: 530px;
-  background: #fff;
+    
+  background: white;
+  width: 100%;
+  max-width: 600px; /* Stops it from getting too wide on desktop */
   padding: 30px;
-  max-width: 600px;
-  width: 400px;
-  height: 300px;
   border-radius: 15px;
-    display: flex;
-  flex-direction: column;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-  min-height: 200px;
+  
+  /* CRITICAL FIXES HERE: */
+  height: auto;       /* Allows the box to grow with the list */
+  min-height: 200px;  /* Minimum size so it looks good empty */
+  margin-top: 170px;
+
+    margin-left: 530px;          /* Removed the hardcoded margin-left/top */
+  display: flex;
+  flex-direction: column;
 }
 
-.dashboard-container h1 {
-  text-align: center;
-  color: #333;
+/* 4. Header & Logout */
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 25px;
 }
 
+.dashboard-header h1 {
+  margin: 0;
+  color: #333;
+  font-size: 1.8rem;
+}
+
+.logout-btn {
+  background-color: transparent;
+  border: 1px solid #ff4d4d;
+  color: #ff4d4d;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.2s;
+}
+
+.logout-btn:hover {
+  background-color: #ff4d4d;
+  color: white;
+}
+
+/* 5. Input Section */
 .todo-input {
   display: flex;
   gap: 10px;
   margin-bottom: 20px;
-  flex-wrap: wrap;
+  flex-wrap: wrap; /* Wraps on very small screens */
 }
+
 .todo-input input {
   flex: 1;
   padding: 12px;
   border-radius: 8px;
   border: 1px solid #ccc;
   font-size: 16px;
+  outline: none;
 }
 
 .todo-input button {
   padding: 12px 20px;
+  background-color: #007bff;
+  color: white;
   border: none;
   border-radius: 8px;
-  background: #007bff;
-  color: #fff;
   font-weight: bold;
   cursor: pointer;
   transition: 0.3s;
+  white-space: nowrap; /* Prevents text from breaking */
 }
 
 .todo-input button:hover {
-  background: #0056b3;
+  background-color: #0056b3;
 }
 
+/* 6. Messages */
 .message {
+  background-color: #d4edda;
+  color: #155724;
+  padding: 10px;
+  border-radius: 6px;
+  margin-bottom: 15px;
   text-align: center;
-  margin-bottom: 20px;
-  color: #28a745;
   font-weight: bold;
 }
 
+/* 7. List Styling */
 .todo-list {
   list-style: none;
   padding: 0;
-  margin-top: 20px;
+  margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 10px; /* space between todos */
+  gap: 10px;
 }
 
 .todo-item {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px;
-  background: #f0f0f0;
+  flex-direction: column; /* Mobile first: Stack items */
+  gap: 10px;
+  padding: 15px;
+  background: #f9f9f9;
   border-radius: 8px;
-  flex-wrap: wrap; /* ensures long content wraps */
+  border: 1px solid #eee;
+}
+
+/* On larger screens, put text and buttons side-by-side */
+@media (min-width: 480px) {
+  .todo-item {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
 }
 
 .todo-item.completed span {
@@ -96,55 +147,39 @@ body, html {
   color: #888;
 }
 
-.todo-actions {
-  display: flex;
-  gap: 5px;
-  flex-wrap: wrap; /* actions wrap if needed */
-}
-.todo-actions button {
-  padding: 6px 10px;
-  border-radius: 6px;
-  border: none;
-  cursor: pointer;
-  font-size: 14px;
-  transition: 0.2s;
-}
-
-.done-btn {
-  background: #28a745;
-  color: #fff;
-}
-.done-btn:hover {
-  background: #1e7e34;
-}
-
-.edit-btn {
-  background: #ffc107;
-  color: #fff;
-}
-.edit-btn:hover {
-  background: #e0a800;
-}
-
-.save-btn {
-  background: #17a2b8;
-  color: #fff;
-}
-.save-btn:hover {
-  background: #117a8b;
-}
-
-.delete-btn {
-  background: #dc3545;
-  color: #fff;
-}
-.delete-btn:hover {
-  background: #a71d2a;
-}
-
+/* Edit Input inside list */
 .edit-input {
   flex: 1;
   padding: 8px;
-  border-radius: 6px;
   border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
 }
+
+/* 8. Action Buttons */
+.todo-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.todo-actions button {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: 0.2s;
+  color: white;
+}
+
+.done-btn { background-color: #28a745; }
+.done-btn:hover { background-color: #218838; }
+
+.edit-btn { background-color: #ffc107; color: #333 !important; }
+.edit-btn:hover { background-color: #e0a800; }
+
+.save-btn { background-color: #17a2b8; }
+.save-btn:hover { background-color: #138496; }
+
+.delete-btn { background-color: #dc3545; }
+.delete-btn:hover { background-color: #c82333; }

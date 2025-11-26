@@ -61,7 +61,14 @@ const Login: React.FC = () => {
           </div>
         )}
         <p className="login-footer">
-          Don't have an account? <a href="/register">Register here</a>
+          Don't have an account?{" "}
+          <span
+            className="register-link"
+            style={{ color: "blue", cursor: "pointer" }}
+            onClick={() => navigate("/register")}
+          >
+            Register here
+          </span>
         </p>
       </div>
     </div>

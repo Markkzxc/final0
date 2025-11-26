@@ -1,0 +1,143 @@
+body, html {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  background: #f0f4f8;
+}
+
+.dashboard-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 40px 20px;
+  min-height: 100vh;
+}
+
+.dashboard-container {
+    margin-top: 170px;
+    margin-left: 530px;
+  background: #fff;
+  padding: 30px;
+  max-width: 600px;
+  width: 400px;
+  height: 300px;
+  border-radius: 15px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.dashboard-container h1 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 25px;
+}
+
+.todo-input {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.todo-input input {
+  flex: 1;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+}
+
+.todo-input button {
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  background: #007bff;
+  color: #fff;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.todo-input button:hover {
+  background: #0056b3;
+}
+
+.message {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #28a745;
+  font-weight: bold;
+}
+
+.todo-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.todo-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f8f9fa;
+  padding: 12px 15px;
+  border-radius: 10px;
+  margin-bottom: 12px;
+  transition: 0.3s;
+}
+
+.todo-item.completed span {
+  text-decoration: line-through;
+  color: #888;
+}
+
+.todo-actions {
+  display: flex;
+  gap: 5px;
+}
+
+.todo-actions button {
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  transition: 0.2s;
+}
+
+.done-btn {
+  background: #28a745;
+  color: #fff;
+}
+.done-btn:hover {
+  background: #1e7e34;
+}
+
+.edit-btn {
+  background: #ffc107;
+  color: #fff;
+}
+.edit-btn:hover {
+  background: #e0a800;
+}
+
+.save-btn {
+  background: #17a2b8;
+  color: #fff;
+}
+.save-btn:hover {
+  background: #117a8b;
+}
+
+.delete-btn {
+  background: #dc3545;
+  color: #fff;
+}
+.delete-btn:hover {
+  background: #a71d2a;
+}
+
+.edit-input {
+  flex: 1;
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}

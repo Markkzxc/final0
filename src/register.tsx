@@ -14,24 +14,38 @@ const Register: React.FC = () => {
 
   const navigate = useNavigate();
 
-  const handleRegister = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setMessage("");
-    setSuccess(false);
+ const handleRegister = async (e: React.FormEvent) => {
+  e.preventDefault();
+  setMessage("");
+  setSuccess(false);
 
-    try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      const uid = userCredential.user.uid;
+  try {
+    // 1️⃣ Create user in Firebase Auth
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    const uid = userCredential.user.uid;
 
-      setMessage("✅ Registered successfully!");
-      setSuccess(true);
+    // 2️⃣ Send user info to your backend
+    await fetch("https://backend0-1-tgre.onrender.com/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        uid,
+        firstName,
+        lastName,
+        email,
+      }),
+    });
 
-      // Navigate to login after successful registration
-      setTimeout(() => navigate("/"), 1500);
-    } catch (err: any) {
-      setMessage("❌ Error: " + err.message);
-    }
-  };
+    // 3️⃣ Show success message
+    setMessage("✅ Registered successfully!");
+    setSuccess(true);
+
+    // 4️⃣ Navigate to login page
+    setTimeout(() => navigate("/"), 1500);
+  } catch (err: any) {
+    setMessage("❌ Error: " + err.message);
+  }
+};
 
   return (
     <div className="login-wrapper">
